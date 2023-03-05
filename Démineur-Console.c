@@ -162,7 +162,7 @@ void verifyDimension(int* inputPlayer)
 void createBomb(int** tab, int** tabHidden, int * dimension, int* bomb)
 {
     int n = 0, count = 0;
-    int* allCase = malloc((*dimension) * (*dimension) * sizeof(int*) - 8);
+    int* allCase = (int*)malloc(((*dimension) * (*dimension) - 9) * sizeof(int*));
     for (int i = 0; i < *dimension; i++)
     {
         for (int j = 0; j < *dimension; j++)
@@ -178,10 +178,10 @@ void createBomb(int** tab, int** tabHidden, int * dimension, int* bomb)
     srand(time(NULL));
     for (int i = 0; i < *bomb; i++)
     {
-        int random = rand() % ((*dimension) * (*dimension) - 8 - n);
+        int random = rand() % ((*dimension) * (*dimension) - 9 - n);
         p = allCase[random];
         *p = 9;
-        for (int j = random; j < (*dimension) * (*dimension) - 8 -n; j++)
+        for (int j = random; j < (*dimension) * (*dimension) - 9 -n; j++)
         {
             allCase[j] = allCase[j + 1];
         }
@@ -197,7 +197,7 @@ void firstBreak(int** tab, int** tabHidden, int* columnChoose, int* lineChoose) 
 
     int count = 0;
     int n = 0;
-    int* caseAroundMoreOne = malloc(9 * sizeof(int*));
+    int* caseAroundMoreOne = (int*)malloc(9 * sizeof(int*) - 8);
     
     for (int i = *columnChoose - 1; i <= *columnChoose + 2; i++)
     {
@@ -227,18 +227,19 @@ void firstBreak(int** tab, int** tabHidden, int* columnChoose, int* lineChoose) 
 
 void countBombAround(int** tab, int* column, int* line, int* dimension, int* count)
 {
+    *count = 0;
     int i, j;
-    printf("column :%d\nline :%d\n", *column, *line);
     for (i = *column - 1; i < *column + 1; i++)
     {
         for (j = *line - 1; j < *line + 1; j++)
         {
             if(i >= 0 && j >= 0 &&  tab[i][j] == 9 && (i != *column && j != *line) && i < *dimension && j < *dimension ) {
                 (*count)++;
-                printf("%d\n", *count);
             }
         }
     }
+
+    printf("%d\n", *count);
 }
 
 void initTab(int** tab, int* dimension)
@@ -249,11 +250,7 @@ void initTab(int** tab, int* dimension)
         for (int j = 0; j < *dimension; j++)
         {
             countBombAround(tab, &i, &j, dimension, &count);
-            printf("\n\ncount : %d\n\n", count);
-            if (count < 9)
-            {
-                tab[i][j] = count;
-            }
+            
         }
     }
 }
@@ -264,7 +261,6 @@ void initTab(int** tab, int* dimension)
 
 void printfTableau(int** tab, int** tabHidden, int* column, int* line)
 {
-    system("cls");
     for (int i = 0; i <= *column; i++)
     {
         for (int j = 0; j <= *line; j++)
